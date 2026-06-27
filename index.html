@@ -5,43 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bin2Dec - Binary to Decimal Converter</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
 </head>
 <body>
     <div class="container">
+        <!-- Header with controls -->
+        <div class="header-controls">
+            <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme">
+                <span class="icon">🌙</span>
+            </button>
+            <button id="langToggle" class="icon-btn" aria-label="Switch language" title="Switch language">
+                <span class="icon">🌐</span>
+            </button>
+            <button id="modeToggle" class="icon-btn" aria-label="Switch conversion mode" title="Switch mode">
+                <span class="icon">🔄</span>
+            </button>
+        </div>
+
         <div class="converter-card">
-            <h1>Bin2Dec</h1>
-            <p class="subtitle">Binary to Decimal Converter</p>
+            <h1 data-i18n="title">Bin2Dec</h1>
+            <p class="subtitle" data-i18n="subtitle">Binary to Decimal Converter</p>
             
-            <div class="input-section">
-                <label for="binaryInput">Enter binary number (up to 8 digits):</label>
-                <input 
-                    type="text" 
-                    id="binaryInput" 
-                    maxlength="8" 
-                    placeholder="e.g., 10101010"
-                    autocomplete="off"
-                >
-                <span class="char-count">0/8</span>
+            <!-- Conversion Mode Tabs -->
+            <div class="mode-tabs">
+                <button class="tab-btn active" data-mode="binary" data-i18n="binaryToDecimal">Binary → Decimal</button>
+                <button class="tab-btn" data-mode="decimal" data-i18n="decimalToBinary">Decimal → Binary</button>
+                <button class="tab-btn" data-mode="quiz" data-i18n="quizMode">Quiz Mode</button>
             </div>
 
-            <div class="error-message" id="errorMessage"></div>
+            <!-- Binary to Decimal Mode -->
+            <div class="conversion-mode" id="binaryMode">
+                <div class="input-section">
+                    <label for="binaryInput" data-i18n="enterBinary">Enter binary number:</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="binaryInput" 
+                            placeholder="e.g., 10101010"
+                            autocomplete="off"
+                            aria-label="Binary input"
+                            aria-describedby="binaryHelp"
+                        >
+                        <button id="clearBtn" class="clear-btn" aria-label="Clear input" title="Clear">✕</button>
+                    </div>
+                    <span class="char-count" id="charCount">0</span>
+                    <span class="real-time-preview" id="realTimePreview"></span>
+                </div>
 
-            <button id="convertBtn" class="convert-btn">Convert</button>
+                <div class="error-message" id="errorMessage" role="alert" aria-live="polite"></div>
 
-            <div class="result-section">
-                <label for="decimalOutput">Decimal equivalent:</label>
-                <div class="output-field" id="decimalOutput">0</div>
+                <div class="button-group">
+                    <button id="convertBtn" class="convert-btn" data-i18n="convert">Convert</button>
+                    <button id="copyBtn" class="icon-btn copy-btn" aria-label="Copy result" title="Copy result">📋</button>
+                </div>
+
+                <div class="result-section">
+                    <label for="decimalOutput" data-i18n="decimalEquivalent">Decimal equivalent:</label>
+                    <div class="output-field" id="decimalOutput" role="status" aria-live="polite">0</div>
+                </div>
+
+                <!-- Bit Visualization -->
+                <div class="bit-visualization" id="bitVisualization"></div>
+
+                <!-- Step-by-step explanation -->
+                <div class="explanation-section" id="explanationSection">
+                    <h3 data-i18n="stepByStep">Step-by-step explanation:</h3>
+                    <div id="explanationContent"></div>
+                </div>
             </div>
 
+            <!-- Decimal to Binary Mode -->
+            <div class="conversion-mode hidden" id="decimalMode">
+                <div class="input-section">
+                    <label for="decimalInput" data-i18n="enterDecimal">Enter decimal number:</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="decimalInput" 
+                            placeholder="e.g., 42"
+                            min="0"
+                            aria-label="Decimal input"
+                        >
+                        <button id="clearDecimalBtn" class="clear-btn" aria-label="Clear input" title="Clear">✕</button>
+                    </div>
+                </div>
+
+                <div class="error-message" id="decimalErrorMessage" role="alert" aria-live="polite"></div>
+
+                <div class="button-group">
+                    <button id="convertDecimalBtn" class="convert-btn" data-i18n="convert">Convert</button>
+                    <button id="copyBinaryBtn" class="icon-btn copy-btn" aria-label="Copy result" title="Copy result">📋</button>
+                </div>
+
+                <div class="result-section">
+                    <label for="binaryOutput" data-i18n="binaryEquivalent">Binary equivalent:</label>
+                    <div class="output-field" id="binaryOutput" role="status" aria-live="polite">0</div>
+                </div>
+            </div>
+
+            <!-- Quiz Mode -->
+            <div class="conversion-mode hidden" id="quizMode">
+                <div class="quiz-section">
+                    <h3 data-i18n="quizTitle">Test your knowledge!</h3>
+                    <p class="quiz-question" id="quizQuestion"></p>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="quizInput" 
+                            placeholder="Your answer"
+                            aria-label="Quiz answer"
+                        >
+                        <button id="clearQuizBtn" class="clear-btn" aria-label="Clear input" title="Clear">✕</button>
+                    </div>
+                    <div class="button-group">
+                        <button id="checkAnswerBtn" class="convert-btn" data-i18n="checkAnswer">Check Answer</button>
+                        <button id="nextQuestionBtn" class="convert-btn secondary" data-i18n="nextQuestion">Next Question</button>
+                    </div>
+                    <div class="quiz-result" id="quizResult" role="status" aria-live="polite"></div>
+                    <div class="quiz-score" data-i18n="score">Score: <span id="scoreValue">0</span>/<span id="totalQuestions">0</span></div>
+                </div>
+            </div>
+
+            <!-- Conversion History -->
+            <div class="history-section">
+                <h3 data-i18n="history">Conversion History</h3>
+                <div id="historyList" class="history-list"></div>
+                <button id="clearHistoryBtn" class="clear-history-btn" data-i18n="clearHistory">Clear History</button>
+            </div>
+
+            <!-- Reference Table -->
+            <div class="reference-section">
+                <button id="toggleReference" class="toggle-btn" data-i18n="showReference">Show Reference Table</button>
+                <div class="reference-table hidden" id="referenceTable">
+                    <h3 data-i18n="referenceTitle">Binary-Decimal Reference</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-i18n="binary">Binary</th>
+                                <th data-i18n="decimal">Decimal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="referenceBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Info Section -->
             <div class="info-section">
-                <p class="info-text">
+                <p class="info-text" data-i18n="howItWorks">
                     <strong>How it works:</strong> Each binary digit represents a power of 2, 
                     starting from the rightmost digit (2⁰).
+                </p>
+                <p class="keyboard-shortcuts" data-i18n="shortcuts">
+                    <strong>Shortcuts:</strong> Ctrl+Enter to convert, Esc to clear
                 </p>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
 </body>
 </html>
