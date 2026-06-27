@@ -2,6 +2,10 @@
 
 A feature-rich web application for converting between binary and decimal number systems with educational features.
 
+## 🚀 Live Demo
+
+[View Live Demo](https://fenixdj3.github.io/2BinDec/)
+
 ## Features
 
 ### Core Functionality
