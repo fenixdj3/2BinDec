@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin2Dec - Binary to Decimal Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="converter-card">
+            <h1>Bin2Dec</h1>
+            <p class="subtitle">Binary to Decimal Converter</p>
+            
+            <div class="input-section">
+                <label for="binaryInput">Enter binary number (up to 8 digits):</label>
+                <input 
+                    type="text" 
+                    id="binaryInput" 
+                    maxlength="8" 
+                    placeholder="e.g., 10101010"
+                    autocomplete="off"
+                >
+                <span class="char-count">0/8</span>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <button id="convertBtn" class="convert-btn">Convert</button>
+
+            <div class="result-section">
+                <label for="decimalOutput">Decimal equivalent:</label>
+                <div class="output-field" id="decimalOutput">0</div>
+            </div>
+
+            <div class="info-section">
+                <p class="info-text">
+                    <strong>How it works:</strong> Each binary digit represents a power of 2, 
+                    starting from the rightmost digit (2⁰).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
